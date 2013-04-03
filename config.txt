@@ -1,0 +1,46 @@
+#Global parameters
+memorylimitN = 2000
+maindir = ./
+verbose = true
+
+#Input Files
+datafileraw  = data.csv
+datafilenormalized =
+normalize = off
+normalitythresholdN = 0.000005
+crosstype = riself
+
+#Output Files
+resultfile = TabulatedResultFile.csv
+tablesep = ;
+imageoutput = pdf
+imagewidthI = 12
+imageheightI = 8
+
+#Qtl mapping method (0=only mqm, 1=mqm compared against scanone/two)
+mapmethodI = 0 
+stepsizeN = 1
+windowsizeN= 10
+cofactorfile = cofactors.txt
+setalfaN = 0.00125
+
+#Permutation
+npermutationsI = 25
+ncoresI = 4
+interactionstrenghtN = 8
+
+#What to do
+plothistogram = on
+plotmap = on
+plotcorrelations = on
+ploteffects = on
+plotinteractions = on
+plotcircles = on
+circlespacingI = 200
+plotheatmap = on
+heatmapcolors = green,blue,white,white,red,yellow
+heatmapbreaks = -100,-10,-3,0,3,10,100
+plotnetwork = on
+plotclusteredheatmap = on
+plotclustergroups = on
+clustergroupcutoffI = 80
