@@ -2,7 +2,7 @@
 #
 # \file script.R
 #
-# Copyright (c) 2009-2010, Danny Arends, with modificationd from: Ronny Joosen
+# Copyright (c) 2009-2014, Danny Arends, with modificationd from: Ronny Joosen
 # last modified Apr, 2013
 # first written Nov, 2009
 #
