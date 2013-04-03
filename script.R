@@ -98,12 +98,8 @@ mqmsupportint <- function(result, marker){
   temp <- which(result[,3] < result[num,3]-drop)
   min <- temp[which(temp < num)[length(which(temp < num))]]
   max <- temp[which(temp > num)[1]]
-  if(is.na(min&&1)){
-    min <- 1
-  }
-  if(is.na(max&&1)){
-    max <- nrow(result)
-  }
+  if(is.na(min&&1)){ min <- 1 }
+  if(is.na(max&&1)){ max <- nrow(result) }
   list(result[min,],result[max,])
 }
 
@@ -199,25 +195,18 @@ DoAnalysisOn <- function(filename,directory){
   log <- file("log.txt", "w")
   configfile <- scan(file=filename,what="raw",sep="\n",quiet = TRUE)
   stamp <- file.info(filename)$mtime
-  required <- c("memorylimitN","maindir","verbose","datafileraw",
-                "crosstype","resultfile","tablesep","imageoutput","imagewidthI",
-                "imageheightI","stepsizeN","windowsizeN","cofactorfile","setalfaN",
-                "npermutationsI","ncoresI","interactionstrenghtN","plothistogram",
-                "ploteffects","plotinteractions","plotcircles","circlespacingI",
-                "plotheatmap","heatmapcolors","heatmapbreaks","plotmap",
-                "plotclusteredheatmap","plotclustergroups","clustergroupcutoffI","normalitythresholdN","normalize")
+  required <- c("memorylimitN", "maindir", "verbose", "datafileraw", "crosstype", "resultfile", "tablesep", "imageoutput", "imagewidthI",
+                "imageheightI", "stepsizeN", "windowsizeN", "cofactorfile","setalfaN", "npermutationsI", "ncoresI", "interactionstrenghtN", "plothistogram",
+                "ploteffects", "plotinteractions", "plotcircles", "circlespacingI", "plotheatmap", "heatmapcolors", "heatmapbreaks","plotmap",
+                "plotclusteredheatmap", "plotclustergroups", "clustergroupcutoffI", "normalitythresholdN", "normalize")
   cat("[script] log started at ",Sys.time(),"\n",file=log)
   for(line in configfile){
     line <- gsub(" ","",line)
     ta = strsplit(line,"=",fixed=TRUE)
     if(strsplit(line,"")[[1]][1] != "#" && !is.na(ta[[1]][2])) {
       temp = ta[[1]][2]
-      if(substr(ta[[1]][1],nchar(ta[[1]][1]),nchar(ta[[1]][1])) == "I") {
-        temp = as.integer(temp)
-      }
-      if(substr(ta[[1]][1],nchar(ta[[1]][1]),nchar(ta[[1]][1])) == "N") {
-        temp = as.numeric(temp)
-      }
+      if(substr(ta[[1]][1],nchar(ta[[1]][1]),nchar(ta[[1]][1])) == "I") { temp = as.integer(temp) }
+      if(substr(ta[[1]][1],nchar(ta[[1]][1]),nchar(ta[[1]][1])) == "N") { temp = as.numeric(temp) }
       assign(ta[[1]][1],temp)
       cat("> assigned to ",ta[[1]][1]," value: ",temp,"\n",file=log,append=T)  
     }
@@ -265,7 +254,6 @@ DoAnalysisOn <- function(filename,directory){
     qtlversion()
     cat("[script] Trying to read in the raw data\n",file=log,append=T)
     mycrossraw <- read.cross(format="csv",file=datafileraw,genotypes=c("AA","BB"))
-    #mycrossraw$pheno <- mycrossraw$pheno[,1:30]
     cat("[script] Gonna remove outliers using a basic Z-score transformation on the raw data\n",file=log,append=T)
     output <- removeoutliersfromcross(mycrossraw,3,logf=log)
     mycrossraw <- output[[1]]
@@ -338,31 +326,14 @@ DoAnalysisOn <- function(filename,directory){
     
     # Initialize the plot functions
     plotFUN <- jpeg
-    if(imageoutput=="jpg"){
-      plotFUN <- jpeg
-      extension <- ".jpg"
-    }
-    if(imageoutput=="bmp"){
-      plotFUN <- bmp
-      extension <- ".bmp"  
-    }
-    if(imageoutput=="png"){
-      plotFUN <- png
-      extension <- ".png"  
-    }
-    if(imageoutput=="pdf"){
-      plotFUN <- pdf
-      extension <- ".pdf"  
-    }
-    if(imageoutput=="eps"){
-      plotFUN <- postscript
-      extension <- ".eps"  
-    }    
-    if(verbose=="false"){
-      verbose <- FALSE
-    }else{
-      verbose <- TRUE
-    }
+    verbose <- TRUE
+    if(imageoutput=="jpg"){ plotFUN <- jpeg; extension <- ".jpg" }
+    if(imageoutput=="bmp"){ plotFUN <- bmp;  extension <- ".bmp" }
+    if(imageoutput=="png"){ plotFUN <- png;  extension <- ".png" }
+    if(imageoutput=="pdf"){ plotFUN <- pdf;  extension <- ".pdf" }
+    if(imageoutput=="eps"){ plotFUN <- postscript; extension <- ".eps" }    
+    if(verbose=="false") verbose <- FALSE
+
     cat("[script] Starting analysis\n",file=log,append=T)    
     mqmallres <- generateall(cross=mycross,crossraw=mycrossraw,cof=cof,
                              workdir=maindir,nbootstrap=nbootstrap,compare=compare,
@@ -476,7 +447,6 @@ generateall <- function(cross,crossraw,cof,workdir,nbootstrap = 0,compare = 0, s
       LODprofiles <- mqmplot.heatmap(crossraw,mqmmulti,col=mycolorrange,breaks=mycolorbreaks)
     dev.off()
     filename=paste("QTL_profiles",".csv",sep="")
-    #colnames(LODprofiles) <- rownames(mqmmulti[[1]])
     write.table(LODprofiles,file=filename, sep="\t")    
   }
 
@@ -649,7 +619,6 @@ plotalleffects <- function(cross,crossraw,cof,pheno.col=1,workdir,nbootstrap = 0
 	}else{
 		if(verbose) cat("No comparison\n")
   }
-
 	
   #plot histogram of phenotype distribution from transformed data and non transformed data
   if(plothistogram=="on"){
@@ -681,7 +650,8 @@ plotalleffects <- function(cross,crossraw,cof,pheno.col=1,workdir,nbootstrap = 0
 	}
   #Create Model output 
   if(pheno.col==1){
-    cat("ID",tablesep,"Trait",tablesep,"QTL",tablesep,"NAvalues",tablesep,"Outliers",tablesep,"Normalization",tablesep,"TopMarker",tablesep,"Chromosome",tablesep,"LOD",tablesep,"Direction",tablesep,"Interval_Start",tablesep,"Peak",tablesep,"Interval_End\n",file="../QTLsummary.csv",append=T,sep="")
+    cat("ID", tablesep, "Trait", tablesep, "QTL", tablesep, "NAvalues", tablesep, "Outliers", tablesep, "Normalization", tablesep,file="../QTLsummary.csv",append=T,sep="")   
+    cat("TopMarker",tablesep,"Chromosome",tablesep,"LOD",tablesep,"Direction",tablesep,"Interval_Start",tablesep,"Peak",tablesep,"Interval_End\n",file="../QTLsummary.csv",append=T,sep="")
   }
   if(!is.null(attr(mqmres,"mqmmodel"))){
     model <- summary(mqmgetmodel(mqmres))
@@ -693,7 +663,8 @@ plotalleffects <- function(cross,crossraw,cof,pheno.col=1,workdir,nbootstrap = 0
       }else{
         cat(tablesep,"NA",file="../QTLsummary.csv",append=T,sep="")
       }      
-      cat(tablesep,as.character(model[x,1]),tablesep,as.character(model[x,2]),tablesep,mqmres[as.character(model[x,1]),3],tablesep,eff[as.character(model[x,1]),3]/abs(eff[as.character(model[x,1]),3]),file="../QTLsummary.csv",append=T,sep="")
+      effRatio <- eff[as.character(model[x,1]),3]/abs(eff[as.character(model[x,1]),3])
+      cat(tablesep,as.character(model[x,1]),tablesep,as.character(model[x,2]),tablesep,mqmres[as.character(model[x,1]),3],tablesep, effRatio,file="../QTLsummary.csv",append=T,sep="")
       cat(tablesep,as.character(mqmsupportint(mqmres,model[x,1])[[1]][1,2]),tablesep,as.character(model[x,3]),tablesep,as.character(mqmsupportint(mqmres,model[x,1])[[2]][1,2]),"\n",file="../QTLsummary.csv",append=T,sep="")
     }
   }else{
@@ -745,17 +716,13 @@ plotalleffects <- function(cross,crossraw,cof,pheno.col=1,workdir,nbootstrap = 0
           }
         }
       }
-    }else{
-        cat("[script] No significant cofactors\n",file=log,append=T)
-    }
+    }else{ cat("[script] No significant cofactors\n",file=log,append=T) }
     cat("[script] Interaction plots finished\n",file=log,append=T)
   }
   cat("[script] Returning result\n",file=log,append=T)
   save(mqmres,file="mqmdata.Rdata") #Save the file as last, so if we redo we know that if its created the plots are also there
 	mqmres
 }
-
-
 
 #res <- DoAnalysisOn("config.txt","D:/GBIC/Joosen/Publication")
 
