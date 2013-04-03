@@ -120,15 +120,10 @@ doplotcircles <- function(cross,result,save=FALSE,spacing=100,plotFUN,extension,
 }
 
 # Calculate the reciproce
-reciproce <- function(x){
-  r <- 1/x
-  r
-}
+reciproce <- function(x){ return(1/x) }
 
 # Does nothing but return the original values
-donothing <- function(x){
-  x
-}
+donothing <- function(x){ return(x) }
 
 # Do normalization on a cross object (return the same crossobject with traits normalized)
 # Normalization methods are stored in: cross$transformations
